@@ -59,9 +59,9 @@ type Configuration struct {
 	HTTPClient    *http.Client
 }
 
-func NewConfiguration() *Configuration {
+func NewConfiguration(ververicaUrl string) *Configuration {
 	cfg := &Configuration{
-		BasePath:      "https://ververica.prod.bird.co",
+		BasePath:      ververicaUrl,
 		DefaultHeader: make(map[string]string),
 		UserAgent:     "Swagger-Codegen/1.0.0/go",
 	}
