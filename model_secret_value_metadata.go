@@ -10,17 +10,13 @@
 
 package vapi
 
-import (
-	"time"
-)
-
 type SecretValueMetadata struct {
-	Id string `json:"id,omitempty"`
-	Name string `json:"name,omitempty"`
-	Namespace string `json:"namespace,omitempty"`
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	ModifiedAt time.Time `json:"modifiedAt,omitempty"`
-	ResourceVersion int32 `json:"resourceVersion,omitempty"`
-	Labels map[string]string `json:"labels,omitempty"`
-	Annotations map[string]string `json:"annotations,omitempty"`
+	Id              string            `json:"id,omitempty"`
+	Name            string            `json:"name,omitempty"`
+	Namespace       string            `json:"namespace,omitempty"`
+	CreatedAt       string            `json:"createdAt,omitempty"`
+	ModifiedAt      string            `json:"modifiedAt,omitempty"`
+	ResourceVersion int32             `json:"resourceVersion,omitempty"`
+	Labels          map[string]string `json:"labels,omitempty"`
+	Annotations     map[string]string `json:"annotations,omitempty"`
 }

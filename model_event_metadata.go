@@ -10,16 +10,12 @@
 
 package vapi
 
-import (
-	"time"
-)
-
 type EventMetadata struct {
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	DeploymentId string `json:"deploymentId,omitempty"`
-	Id string `json:"id,omitempty"`
-	JobId string `json:"jobId,omitempty"`
-	Name string `json:"name,omitempty"`
-	Namespace string `json:"namespace,omitempty"`
-	ResourceVersion int32 `json:"resourceVersion,omitempty"`
+	CreatedAt       string `json:"createdAt,omitempty"`
+	DeploymentId    string `json:"deploymentId,omitempty"`
+	Id              string `json:"id,omitempty"`
+	JobId           string `json:"jobId,omitempty"`
+	Name            string `json:"name,omitempty"`
+	Namespace       string `json:"namespace,omitempty"`
+	ResourceVersion int32  `json:"resourceVersion,omitempty"`
 }

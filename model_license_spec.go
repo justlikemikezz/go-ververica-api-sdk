@@ -15,7 +15,7 @@ import (
 )
 
 type LicenseSpec struct {
-	Expires time.Time `json:"expires,omitempty"`
+	Expires string `json:"expires,omitempty"`
 	LicenseId string `json:"licenseId,omitempty"`
 	LicensedTo string `json:"licensedTo,omitempty"`
 	Params map[string]string `json:"params,omitempty"`

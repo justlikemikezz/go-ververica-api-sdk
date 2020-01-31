@@ -10,12 +10,8 @@
 
 package vapi
 
-import (
-	"time"
-)
-
 type LicenseMetadata struct {
 	Annotations map[string]string `json:"annotations,omitempty"`
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	Id *LicenseId `json:"id,omitempty"`
+	CreatedAt   string            `json:"createdAt,omitempty"`
+	Id          *LicenseId        `json:"id,omitempty"`
 }
