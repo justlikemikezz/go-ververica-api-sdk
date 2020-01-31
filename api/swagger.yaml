@@ -1,0 +1,5527 @@
+---
+swagger: "2.0"
+info:
+  description: "Application Manager APIs to control Apache Flink jobs"
+  version: "2.0.1"
+  title: "Application Manager API"
+  contact:
+    name: "Ververica GmbH"
+    url: "https://www.ververica.com"
+    email: "platform@ververica.com"
+  license:
+    name: "Proprietary"
+host: "ververica.prod.bird.co"
+basePath: "/"
+tags:
+- name: "deployment-resource"
+  description: "Deployment Resource"
+- name: "deployment-target-resource"
+  description: "Deployment Target Resource"
+- name: "event-resource"
+  description: "Event Resource"
+- name: "job-resource"
+  description: "Job Resource"
+- name: "savepoint-resource"
+  description: "Savepoint Resource"
+- name: "secret-value-resource"
+  description: "Secret Value Resource"
+- name: "status-resource"
+  description: "Status Resource"
+consumes:
+- "application/json"
+- "application/yaml"
+produces:
+- "application/json"
+- "application/yaml"
+paths:
+  /api/v1/namespaces/{namespace}/deployment-targets:
+    get:
+      tags:
+      - "deployment-target-resource"
+      summary: "List all deployment targets"
+      operationId: "getDeploymentTargetsUsingGET"
+      parameters:
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/ResourceList«DeploymentTarget»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+    post:
+      tags:
+      - "deployment-target-resource"
+      summary: "Create a deployment target"
+      operationId: "createDeploymentTargetUsingPOST"
+      parameters:
+      - in: "body"
+        name: "deploymentTarget"
+        description: "deploymentTarget"
+        required: true
+        schema:
+          $ref: "#/definitions/DeploymentTarget"
+        x-exportParamName: "DeploymentTarget"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/DeploymentTarget"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+  /api/v1/namespaces/{namespace}/deployment-targets/{name}:
+    get:
+      tags:
+      - "deployment-target-resource"
+      summary: "Get a deployment target by name"
+      operationId: "getDeploymentTargetUsingGET"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "name"
+        required: true
+        type: "string"
+        x-exportParamName: "Name"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/DeploymentTarget"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+    delete:
+      tags:
+      - "deployment-target-resource"
+      summary: "Delete a deployment target"
+      operationId: "deleteDeploymentTargetUsingDELETE"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "name"
+        required: true
+        type: "string"
+        x-exportParamName: "Name"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/DeploymentTarget"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      deprecated: false
+  /api/v1/namespaces/{namespace}/deployments:
+    get:
+      tags:
+      - "deployment-resource"
+      summary: "List all deployments"
+      operationId: "getDeploymentsUsingGET"
+      parameters:
+      - name: "labelSelector"
+        in: "query"
+        description: "labelSelector"
+        required: false
+        type: "string"
+        x-exportParamName: "LabelSelector"
+        x-optionalDataType: "String"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/ResourceList«Deployment»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+    post:
+      tags:
+      - "deployment-resource"
+      summary: "Create a deployment"
+      operationId: "createDeploymentUsingPOST"
+      parameters:
+      - in: "body"
+        name: "deploymentChange"
+        description: "deploymentChange"
+        required: true
+        schema:
+          $ref: "#/definitions/Deployment"
+        x-examples:
+          ? ""
+          : "{  \n   \"metadata\":{  \n      \"name\":\"Fraud Detection\",\n     \
+            \ \"labels\":{  \n         \"env\":\"production\"\n      }\n   },\n  \
+            \ \"spec\":{  \n      \"state\":\"RUNNING\",\n      \"deploymentTargetId\"\
+            :\"57b4c290-73ad-11e7-8cf7-a6006ad3dba0\",\n      \"upgradeStrategy\"\
+            :{  \n         \"kind\":\"STATEFUL\"\n      },\n      \"template\":{ \
+            \ \n         \"spec\":{  \n            \"parallelism\":4,\n          \
+            \  \"artifact\":{  \n               \"kind\":\"jar\",\n              \
+            \ \"jarUri\":\"https://repo.dataartisans.com/foo/fraud_detection.jar\"\
+            \n            },\n            \"flinkConfiguration\":{  \n           \
+            \    \"foo\":\"bar\"\n            }\n         }\n      }\n   }\n}  }"
+        x-exportParamName: "DeploymentChange"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Deployment"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+  /api/v1/namespaces/{namespace}/deployments/{deploymentId}:
+    get:
+      tags:
+      - "deployment-resource"
+      summary: "Get a deployment by id"
+      operationId: "getDeploymentUsingGET"
+      parameters:
+      - name: "deploymentId"
+        in: "path"
+        description: "deploymentId"
+        required: true
+        type: "string"
+        format: "uuid"
+        x-exportParamName: "DeploymentId"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Deployment"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+    delete:
+      tags:
+      - "deployment-resource"
+      summary: "Delete deployment"
+      description: "This operation expects the deployment to be in desired state CANCELLED"
+      operationId: "deleteDeploymentUsingDELETE"
+      parameters:
+      - name: "deploymentId"
+        in: "path"
+        description: "deploymentId"
+        required: true
+        type: "string"
+        format: "uuid"
+        x-exportParamName: "DeploymentId"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Deployment"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      deprecated: false
+    patch:
+      tags:
+      - "deployment-resource"
+      summary: "Update a deployment"
+      operationId: "updateDeploymentUsingPATCH"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/com.dataartisans.appmanager.api.v1.entity.deployment.Deployment"
+        x-exportParamName: "Body"
+      - name: "deploymentId"
+        in: "path"
+        description: "deploymentId"
+        required: true
+        type: "string"
+        format: "uuid"
+        x-exportParamName: "DeploymentId"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Deployment"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      deprecated: false
+  /api/v1/namespaces/{namespace}/events:
+    get:
+      tags:
+      - "event-resource"
+      summary: "Filter all events for a deployment or job"
+      operationId: "getEventsUsingGET"
+      parameters:
+      - name: "deploymentId"
+        in: "query"
+        description: "deploymentId"
+        required: false
+        type: "string"
+        format: "uuid"
+        x-exportParamName: "DeploymentId"
+      - name: "jobId"
+        in: "query"
+        description: "jobId"
+        required: false
+        type: "string"
+        format: "uuid"
+        x-exportParamName: "JobId"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/ResourceList«Event»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+  /api/v1/namespaces/{namespace}/jobs:
+    get:
+      tags:
+      - "job-resource"
+      summary: "List all jobs. Can be filtered by DeploymentId"
+      operationId: "getJobsUsingGET"
+      parameters:
+      - name: "deploymentId"
+        in: "query"
+        description: "deploymentId"
+        required: false
+        type: "string"
+        format: "uuid"
+        x-exportParamName: "DeploymentId"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/ResourceList«Job»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+  /api/v1/namespaces/{namespace}/jobs/{jobId}:
+    get:
+      tags:
+      - "job-resource"
+      summary: "Get a job by id"
+      operationId: "getJobUsingGET"
+      parameters:
+      - name: "jobId"
+        in: "path"
+        description: "jobId"
+        required: true
+        type: "string"
+        format: "uuid"
+        x-exportParamName: "JobId"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Job"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+  /api/v1/namespaces/{namespace}/savepoints:
+    get:
+      tags:
+      - "savepoint-resource"
+      summary: "List all savepoints. Can be filtered by DeploymentId"
+      operationId: "getSavepointsUsingGET"
+      parameters:
+      - name: "deploymentId"
+        in: "query"
+        description: "deploymentId"
+        required: false
+        type: "string"
+        format: "uuid"
+        x-exportParamName: "DeploymentId"
+      - name: "jobId"
+        in: "query"
+        description: "jobId"
+        required: false
+        type: "string"
+        format: "uuid"
+        x-exportParamName: "JobId"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Savepoint"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+    post:
+      tags:
+      - "savepoint-resource"
+      summary: "Create a new savepoint"
+      operationId: "createSavepointUsingPOST"
+      parameters:
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      - in: "body"
+        name: "savepointChange"
+        description: "savepointChange"
+        required: true
+        schema:
+          $ref: "#/definitions/Savepoint"
+        x-examples:
+          ? ""
+          : "{\n  \"metadata\": {\n    \"deploymentId\": \"19570815-2528-4bda-a6ba-733cc29282c4\"\
+            \n  }\n}"
+        x-exportParamName: "SavepointChange"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Savepoint"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+  /api/v1/namespaces/{namespace}/savepoints/{savepointId}:
+    get:
+      tags:
+      - "savepoint-resource"
+      summary: "Get a savepoint by id"
+      operationId: "getSavepointUsingGET"
+      parameters:
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      - name: "savepointId"
+        in: "path"
+        description: "savepointId"
+        required: true
+        type: "string"
+        format: "uuid"
+        x-exportParamName: "SavepointId"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Savepoint"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+  /api/v1/namespaces/{namespace}/secret-values:
+    get:
+      tags:
+      - "secret-value-resource"
+      summary: "List all secrets values"
+      operationId: "getSecretValuesUsingGET"
+      parameters:
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/ResourceList«SecretValue»"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+    post:
+      tags:
+      - "secret-value-resource"
+      summary: "Create a secret value"
+      operationId: "createSecretValueUsingPOST"
+      parameters:
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      - in: "body"
+        name: "secretValue"
+        description: "secretValue"
+        required: true
+        schema:
+          $ref: "#/definitions/SecretValue"
+        x-examples:
+          ? ""
+          : "{\n  \"metadata\": {\n    \"name\": \"mypassword\"\n  },\n  \"spec\"\
+            : {\n    \"kind\": \"Plain\",\n    \"value\": \"secret\"\n  }\n}"
+        x-exportParamName: "SecretValue"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SecretValue"
+        "201":
+          description: "Created"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+  /api/v1/namespaces/{namespace}/secret-values/{name}:
+    get:
+      tags:
+      - "secret-value-resource"
+      summary: "Get a secret value by name"
+      operationId: "getSecretValueUsingGET"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "name"
+        required: true
+        type: "string"
+        x-exportParamName: "Name"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SecretValue"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+    delete:
+      tags:
+      - "secret-value-resource"
+      summary: "Delete a secret value"
+      operationId: "deleteSecretValueUsingDELETE"
+      parameters:
+      - name: "name"
+        in: "path"
+        description: "name"
+        required: true
+        type: "string"
+        x-exportParamName: "Name"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SecretValue"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      deprecated: false
+    patch:
+      tags:
+      - "secret-value-resource"
+      summary: "Update a secret value"
+      operationId: "updateSecretValueUsingPATCH"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/com.dataartisans.appmanager.api.v1.entity.secretvalue.SecretValue"
+        x-examples:
+          ? ""
+          : "{\n  \"metadata\": {\n    \"name\": \"mypassword\"\n  },\n  \"spec\"\
+            : {\n    \"kind\": \"Plain\",\n    \"value\": \"secret\"\n  }\n}"
+        x-exportParamName: "Body"
+      - name: "name"
+        in: "path"
+        description: "name"
+        required: true
+        type: "string"
+        x-exportParamName: "Name"
+      - name: "namespace"
+        in: "path"
+        description: "namespace"
+        required: true
+        type: "string"
+        x-exportParamName: "Namespace"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SecretValue"
+        "204":
+          description: "No Content"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+      deprecated: false
+  /api/v1/status:
+    get:
+      tags:
+      - "status-resource"
+      summary: "Check that the server is running"
+      operationId: "getStatusUsingGET"
+      parameters: []
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: "object"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+  /api/v1/status/system-info:
+    get:
+      tags:
+      - "status-resource"
+      summary: "Get system's information"
+      operationId: "getSystemInfoUsingGET"
+      parameters: []
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SystemInformation"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+      deprecated: false
+definitions:
+  Artifact:
+    type: "object"
+    properties:
+      kind:
+        type: "string"
+    title: "Artifact"
+    example:
+      kind: "kind"
+  Deployment:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/DeploymentMetadata"
+      spec:
+        $ref: "#/definitions/DeploymentSpec"
+      status:
+        $ref: "#/definitions/DeploymentStatus"
+    title: "Deployment"
+    example:
+      metadata:
+        createdAt: "2000-01-23T04:56:07.000+00:00"
+        modifiedAt: "2000-01-23T04:56:07.000+00:00"
+        resourceVersion: 0
+        name: "name"
+        namespace: "namespace"
+        annotations:
+          key: "annotations"
+        id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        labels:
+          key: "labels"
+      apiVersion: "apiVersion"
+      kind: "kind"
+      spec:
+        template:
+          metadata:
+            annotations:
+              key: "annotations"
+          spec:
+            artifact:
+              kind: "kind"
+            kubernetes:
+              pods:
+                tolerations:
+                - integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                - integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                imagePullSecrets:
+                - name: "name"
+                - name: "name"
+                envVars:
+                - name: "name"
+                  value: "value"
+                  valueFrom:
+                    integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                - name: "name"
+                  value: "value"
+                  valueFrom:
+                    integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                annotations:
+                  key: "annotations"
+                securityContext:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                affinity:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                nodeSelector:
+                  key: "nodeSelector"
+                volumeMounts:
+                - volume:
+                    integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  volumeMount:
+                    integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  name: "name"
+                - volume:
+                    integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  volumeMount:
+                    integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  name: "name"
+            parallelism: 5
+            numberOfTaskManagers: 5
+            resources:
+              key:
+                memory: "memory"
+                cpu: 2.3021358869347655
+            logging:
+              log4jLoggers:
+                key: "log4jLoggers"
+            flinkConfiguration:
+              key: "flinkConfiguration"
+        restoreStrategy:
+          kind: "kind"
+        state: "RUNNING"
+        upgradeStrategy:
+          kind: "kind"
+        maxSavepointCreationAttempts: 6
+        maxJobCreationAttempts: 1
+        deploymentTargetId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      status:
+        state: "RUNNING"
+  DeploymentMetadata:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      name:
+        type: "string"
+      namespace:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      modifiedAt:
+        type: "string"
+        format: "date-time"
+      labels:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      annotations:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      resourceVersion:
+        type: "integer"
+        format: "int32"
+    title: "DeploymentMetadata"
+    example:
+      createdAt: "2000-01-23T04:56:07.000+00:00"
+      modifiedAt: "2000-01-23T04:56:07.000+00:00"
+      resourceVersion: 0
+      name: "name"
+      namespace: "namespace"
+      annotations:
+        key: "annotations"
+      id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      labels:
+        key: "labels"
+  DeploymentRestoreStrategy:
+    type: "object"
+    properties:
+      kind:
+        type: "string"
+    title: "DeploymentRestoreStrategy"
+    example:
+      kind: "kind"
+  DeploymentSpec:
+    type: "object"
+    properties:
+      state:
+        type: "string"
+        enum:
+        - "RUNNING"
+        - "SUSPENDED"
+        - "CANCELLED"
+      upgradeStrategy:
+        $ref: "#/definitions/DeploymentUpgradeStrategy"
+      restoreStrategy:
+        $ref: "#/definitions/DeploymentRestoreStrategy"
+      deploymentTargetId:
+        type: "string"
+        format: "uuid"
+      maxSavepointCreationAttempts:
+        type: "integer"
+        format: "int32"
+      maxJobCreationAttempts:
+        type: "integer"
+        format: "int32"
+      template:
+        $ref: "#/definitions/DeploymentTemplate"
+    title: "DeploymentSpec"
+    example:
+      template:
+        metadata:
+          annotations:
+            key: "annotations"
+        spec:
+          artifact:
+            kind: "kind"
+          kubernetes:
+            pods:
+              tolerations:
+              - integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              - integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              imagePullSecrets:
+              - name: "name"
+              - name: "name"
+              envVars:
+              - name: "name"
+                value: "value"
+                valueFrom:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+              - name: "name"
+                value: "value"
+                valueFrom:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+              annotations:
+                key: "annotations"
+              securityContext:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              affinity:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              nodeSelector:
+                key: "nodeSelector"
+              volumeMounts:
+              - volume:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                volumeMount:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                name: "name"
+              - volume:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                volumeMount:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                name: "name"
+          parallelism: 5
+          numberOfTaskManagers: 5
+          resources:
+            key:
+              memory: "memory"
+              cpu: 2.3021358869347655
+          logging:
+            log4jLoggers:
+              key: "log4jLoggers"
+          flinkConfiguration:
+            key: "flinkConfiguration"
+      restoreStrategy:
+        kind: "kind"
+      state: "RUNNING"
+      upgradeStrategy:
+        kind: "kind"
+      maxSavepointCreationAttempts: 6
+      maxJobCreationAttempts: 1
+      deploymentTargetId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+  DeploymentStatus:
+    type: "object"
+    properties:
+      state:
+        type: "string"
+        enum:
+        - "RUNNING"
+        - "SUSPENDED"
+        - "CANCELLED"
+        - "TRANSITIONING"
+        - "FAILED"
+        - "FINISHED"
+    title: "DeploymentStatus"
+    example:
+      state: "RUNNING"
+  DeploymentTarget:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/DeploymentTargetMetadata"
+      spec:
+        $ref: "#/definitions/DeploymentTargetSpec"
+    title: "DeploymentTarget"
+    example:
+      metadata:
+        createdAt: "2000-01-23T04:56:07.000+00:00"
+        modifiedAt: "2000-01-23T04:56:07.000+00:00"
+        resourceVersion: 0
+        name: "name"
+        namespace: "namespace"
+        annotations:
+          key: "annotations"
+        id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        labels:
+          key: "labels"
+      apiVersion: "apiVersion"
+      kind: "kind"
+      spec:
+        kubernetes:
+          namespace: "namespace"
+        deploymentPatchSet:
+          integralNumber: true
+          double: true
+          valueNode: true
+          bigInteger: true
+          floatingPointNumber: true
+          float: true
+          nodeType: "ARRAY"
+          int: true
+          long: true
+          textual: true
+          missingNode: true
+          pojo: true
+          number: true
+          boolean: true
+          null: true
+          array: true
+          binary: true
+          containerNode: true
+          short: true
+          bigDecimal: true
+          object: true
+  DeploymentTargetMetadata:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      name:
+        type: "string"
+      namespace:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      modifiedAt:
+        type: "string"
+        format: "date-time"
+      annotations:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      labels:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      resourceVersion:
+        type: "integer"
+        format: "int32"
+    title: "DeploymentTargetMetadata"
+    example:
+      createdAt: "2000-01-23T04:56:07.000+00:00"
+      modifiedAt: "2000-01-23T04:56:07.000+00:00"
+      resourceVersion: 0
+      name: "name"
+      namespace: "namespace"
+      annotations:
+        key: "annotations"
+      id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      labels:
+        key: "labels"
+  DeploymentTargetSpec:
+    type: "object"
+    properties:
+      kubernetes:
+        $ref: "#/definitions/KubernetesTarget"
+      deploymentPatchSet:
+        $ref: "#/definitions/JsonNode"
+    title: "DeploymentTargetSpec"
+    example:
+      kubernetes:
+        namespace: "namespace"
+      deploymentPatchSet:
+        integralNumber: true
+        double: true
+        valueNode: true
+        bigInteger: true
+        floatingPointNumber: true
+        float: true
+        nodeType: "ARRAY"
+        int: true
+        long: true
+        textual: true
+        missingNode: true
+        pojo: true
+        number: true
+        boolean: true
+        null: true
+        array: true
+        binary: true
+        containerNode: true
+        short: true
+        bigDecimal: true
+        object: true
+  DeploymentTemplate:
+    type: "object"
+    properties:
+      metadata:
+        $ref: "#/definitions/DeploymentTemplateMetadata"
+      spec:
+        $ref: "#/definitions/DeploymentTemplateSpec"
+    title: "DeploymentTemplate"
+    example:
+      metadata:
+        annotations:
+          key: "annotations"
+      spec:
+        artifact:
+          kind: "kind"
+        kubernetes:
+          pods:
+            tolerations:
+            - integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            - integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            imagePullSecrets:
+            - name: "name"
+            - name: "name"
+            envVars:
+            - name: "name"
+              value: "value"
+              valueFrom:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+            - name: "name"
+              value: "value"
+              valueFrom:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+            annotations:
+              key: "annotations"
+            securityContext:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            affinity:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            nodeSelector:
+              key: "nodeSelector"
+            volumeMounts:
+            - volume:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              volumeMount:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              name: "name"
+            - volume:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              volumeMount:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              name: "name"
+        parallelism: 5
+        numberOfTaskManagers: 5
+        resources:
+          key:
+            memory: "memory"
+            cpu: 2.3021358869347655
+        logging:
+          log4jLoggers:
+            key: "log4jLoggers"
+        flinkConfiguration:
+          key: "flinkConfiguration"
+  DeploymentTemplateMetadata:
+    type: "object"
+    properties:
+      annotations:
+        type: "object"
+        additionalProperties:
+          type: "string"
+    title: "DeploymentTemplateMetadata"
+    example:
+      annotations:
+        key: "annotations"
+  DeploymentTemplateSpec:
+    type: "object"
+    properties:
+      artifact:
+        $ref: "#/definitions/Artifact"
+      parallelism:
+        type: "integer"
+        format: "int32"
+      numberOfTaskManagers:
+        type: "integer"
+        format: "int32"
+      resources:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ResourceSpec"
+      flinkConfiguration:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      logging:
+        $ref: "#/definitions/Logging"
+      kubernetes:
+        $ref: "#/definitions/KubernetesOptions"
+    title: "DeploymentTemplateSpec"
+    example:
+      artifact:
+        kind: "kind"
+      kubernetes:
+        pods:
+          tolerations:
+          - integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          - integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          imagePullSecrets:
+          - name: "name"
+          - name: "name"
+          envVars:
+          - name: "name"
+            value: "value"
+            valueFrom:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+          - name: "name"
+            value: "value"
+            valueFrom:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+          annotations:
+            key: "annotations"
+          securityContext:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          affinity:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          nodeSelector:
+            key: "nodeSelector"
+          volumeMounts:
+          - volume:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            volumeMount:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            name: "name"
+          - volume:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            volumeMount:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            name: "name"
+      parallelism: 5
+      numberOfTaskManagers: 5
+      resources:
+        key:
+          memory: "memory"
+          cpu: 2.3021358869347655
+      logging:
+        log4jLoggers:
+          key: "log4jLoggers"
+      flinkConfiguration:
+        key: "flinkConfiguration"
+  DeploymentUpgradeStrategy:
+    type: "object"
+    properties:
+      kind:
+        type: "string"
+    title: "DeploymentUpgradeStrategy"
+    example:
+      kind: "kind"
+  EnvVar:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      value:
+        type: "string"
+      valueFrom:
+        $ref: "#/definitions/JsonNode"
+    title: "EnvVar"
+    example:
+      name: "name"
+      value: "value"
+      valueFrom:
+        integralNumber: true
+        double: true
+        valueNode: true
+        bigInteger: true
+        floatingPointNumber: true
+        float: true
+        nodeType: "ARRAY"
+        int: true
+        long: true
+        textual: true
+        missingNode: true
+        pojo: true
+        number: true
+        boolean: true
+        null: true
+        array: true
+        binary: true
+        containerNode: true
+        short: true
+        bigDecimal: true
+        object: true
+  Event:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/EventMetadata"
+      spec:
+        $ref: "#/definitions/EventSpec"
+    title: "Event"
+    example:
+      metadata:
+        createdAt: "2000-01-23T04:56:07.000+00:00"
+        jobId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        deploymentId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        resourceVersion: 0
+        name: "STATE_TRANSITION_IS_NEEDED"
+        namespace: "namespace"
+        id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      apiVersion: "apiVersion"
+      kind: "kind"
+      spec:
+        message: "message"
+  EventMetadata:
+    type: "object"
+    properties:
+      createdAt:
+        type: "string"
+        format: "date-time"
+      deploymentId:
+        type: "string"
+        format: "uuid"
+      id:
+        type: "string"
+        format: "uuid"
+      jobId:
+        type: "string"
+        format: "uuid"
+      name:
+        type: "string"
+        enum:
+        - "STATE_TRANSITION_IS_NEEDED"
+        - "FOUND_A_JOB_TO_TERMINATE"
+        - "FOUND_A_JOB_TO_WAIT_FOR_ITS_TERMINATION"
+        - "AWAITING_SAVEPOINT_COMPLETION_TO_TRANSITION_TO_SUSPENDED"
+        - "CREATING_A_SAVEPOINT_BEFORE_SUSPENSION"
+        - "FOUND_A_COMPLETED_SAVEPOINT_READY_FOR_SUSPENSION"
+        - "USING_AN_UPGRADE_STRATEGY"
+        - "CREATING_A_NEW_JOB"
+        - "FAILED_CREATING_A_NEW_JOB"
+        - "AWAITING_A_JOB_TO_START"
+        - "FOUND_A_STOPPED_JOB_AND_WILL_TERMINATE_IT"
+        - "STATE_TRANSITION_IS_COMPLETED"
+        - "TRANSITIONED_TO_FINISHED_STATE"
+        - "AWAITING_A_JOB_TO_TERMINATE"
+        - "TOO_MANY_FAILED_SUSPENSION_ATTEMPTS"
+        - "TOO_MANY_FAILED_JOB_CREATION_ATTEMPTS"
+        - "SPINNING_UP_A_CLUSTER_FOR_A_JOB"
+        - "JOB_SUCCESSFULLY_STARTED"
+        - "JOB_SUCCESSFULLY_FINISHED"
+        - "AWAITING_FOR_A_CLUSTER_TO_SPIN_UP"
+        - "TERMINATING_A_JOB_DUE_TO_AN_UNRECOVERABLE_FAILURE"
+        - "AWAIT_FOR_A_CLUSTER_TO_TEARDOWN"
+        - "RESOURCE_QUOTA_EXCEEDED"
+        - "TRANSITIONING_TO_FAILED_STATE_BECAUSE_OF_A_MISSING_JOB"
+        - "TRANSITIONING_TO_FAILED_STATE_BECAUSE_JOB_NOT_STARTED"
+        - "TRANSITIONING_TO_FAILED_STATE_BECAUSE_SAVEPOINT_FAILED_IN_FLINK"
+        - "TRANSITIONED_TO_COMPLETED"
+        - "AWAITING_FOR_A_SAVEPOINT_TO_COMPLETE"
+        - "AN_UN_RECOVERABLE_FAILURE_WHILE_TRIGGERING_A_SAVEPOINT"
+        - "RECOVERABLE_FAILURE_WHILE_TRIGGERING_A_SAVEPOINT"
+        - "SUCCESSFULLY_TRIGGERED_A_SAVEPOINT"
+        - "NEED_TO_TRIGGER_A_SAVEPOINT"
+        - "AN_UNRECOVERABLE_FAILURE_WHILE_TAKING_A_SAVEPOINT"
+        - "RECOVERABLE_FAILURE_WHILE_CHECKING_A_SAVEPOINT_STATUS"
+        - "FOUND_AN_OLD_JOB_AND_WILL_TERMINATE_IT"
+        - "COULD_NOT_FIND_A_JOB_TO_SUSPEND"
+        - "JOB_IS_NOT_CONFIGURED_WITH_SAVEPOINT_SUPPORT"
+        - "REFERENCED_DEPLOYMENT_TARGET_DOES_NOT_EXIST"
+        - "GENERAL_FAILURE"
+        - "FAILED_TO_CREATE_CLUSTER_FOR_JOB"
+      namespace:
+        type: "string"
+      resourceVersion:
+        type: "integer"
+        format: "int32"
+    title: "EventMetadata"
+    example:
+      createdAt: "2000-01-23T04:56:07.000+00:00"
+      jobId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      deploymentId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      resourceVersion: 0
+      name: "STATE_TRANSITION_IS_NEEDED"
+      namespace: "namespace"
+      id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+  EventSpec:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+    title: "EventSpec"
+    example:
+      message: "message"
+  Failure:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+      reason:
+        type: "string"
+      failedAt:
+        type: "string"
+        format: "date-time"
+    title: "Failure"
+    example:
+      reason: "reason"
+      failedAt: "2000-01-23T04:56:07.000+00:00"
+      message: "message"
+  FlinkSavepointId:
+    type: "object"
+    properties:
+      uuid:
+        type: "string"
+        format: "uuid"
+    title: "FlinkSavepointId"
+    example:
+      uuid: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+  Job:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/JobMetadata"
+      spec:
+        $ref: "#/definitions/JobSpec"
+      status:
+        $ref: "#/definitions/JobStatus"
+    title: "Job"
+    example:
+      metadata:
+        createdAt: "2000-01-23T04:56:07.000+00:00"
+        terminatedAt: "2000-01-23T04:56:07.000+00:00"
+        modifiedAt: "2000-01-23T04:56:07.000+00:00"
+        deploymentId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        resourceVersion: 0
+        namespace: "namespace"
+        annotations:
+          key: "annotations"
+        id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      apiVersion: "apiVersion"
+      kind: "kind"
+      spec:
+        artifact:
+          kind: "kind"
+        deploymentTarget:
+          kubernetes:
+            namespace: "namespace"
+        kubernetes:
+          pods:
+            tolerations:
+            - integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            - integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            imagePullSecrets:
+            - name: "name"
+            - name: "name"
+            envVars:
+            - name: "name"
+              value: "value"
+              valueFrom:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+            - name: "name"
+              value: "value"
+              valueFrom:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+            annotations:
+              key: "annotations"
+            securityContext:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            affinity:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            nodeSelector:
+              key: "nodeSelector"
+            volumeMounts:
+            - volume:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              volumeMount:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              name: "name"
+            - volume:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              volumeMount:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              name: "name"
+        savepointLocation:
+          rawFragment: "rawFragment"
+          userInfo: "userInfo"
+          opaque: true
+          scheme: "scheme"
+          query: "query"
+          schemeSpecificPart: "schemeSpecificPart"
+          rawUserInfo: "rawUserInfo"
+          path: "path"
+          fragment: "fragment"
+          rawPath: "rawPath"
+          port: 5
+          rawSchemeSpecificPart: "rawSchemeSpecificPart"
+          absolute: true
+          rawAuthority: "rawAuthority"
+          authority: "authority"
+          host: "host"
+          rawQuery: "rawQuery"
+        parallelism: 1
+        logging:
+          log4jLoggers:
+            key: "log4jLoggers"
+        numberOfTaskManagers: 6
+        resources:
+          key:
+            memory: "memory"
+            cpu: 2.3021358869347655
+        allowNonRestoredState: true
+        flinkConfiguration:
+          key: "flinkConfiguration"
+      status:
+        failure:
+          reason: "reason"
+          failedAt: "2000-01-23T04:56:07.000+00:00"
+          message: "message"
+        state: "STARTING"
+  JobDeploymentTarget:
+    type: "object"
+    properties:
+      kubernetes:
+        $ref: "#/definitions/KubernetesTarget"
+    title: "JobDeploymentTarget"
+    example:
+      kubernetes:
+        namespace: "namespace"
+  JobMetadata:
+    type: "object"
+    properties:
+      annotations:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      deploymentId:
+        type: "string"
+        format: "uuid"
+      id:
+        type: "string"
+        format: "uuid"
+      modifiedAt:
+        type: "string"
+        format: "date-time"
+      namespace:
+        type: "string"
+      resourceVersion:
+        type: "integer"
+        format: "int32"
+      terminatedAt:
+        type: "string"
+        format: "date-time"
+    title: "JobMetadata"
+    example:
+      createdAt: "2000-01-23T04:56:07.000+00:00"
+      terminatedAt: "2000-01-23T04:56:07.000+00:00"
+      modifiedAt: "2000-01-23T04:56:07.000+00:00"
+      deploymentId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      resourceVersion: 0
+      namespace: "namespace"
+      annotations:
+        key: "annotations"
+      id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+  JobSpec:
+    type: "object"
+    properties:
+      allowNonRestoredState:
+        type: "boolean"
+      artifact:
+        $ref: "#/definitions/Artifact"
+      deploymentTarget:
+        $ref: "#/definitions/JobDeploymentTarget"
+      flinkConfiguration:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      kubernetes:
+        $ref: "#/definitions/KubernetesOptions"
+      logging:
+        $ref: "#/definitions/Logging"
+      numberOfTaskManagers:
+        type: "integer"
+        format: "int32"
+      parallelism:
+        type: "integer"
+        format: "int32"
+      resources:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ResourceSpec"
+      savepointLocation:
+        $ref: "#/definitions/URI"
+    title: "JobSpec"
+    example:
+      artifact:
+        kind: "kind"
+      deploymentTarget:
+        kubernetes:
+          namespace: "namespace"
+      kubernetes:
+        pods:
+          tolerations:
+          - integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          - integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          imagePullSecrets:
+          - name: "name"
+          - name: "name"
+          envVars:
+          - name: "name"
+            value: "value"
+            valueFrom:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+          - name: "name"
+            value: "value"
+            valueFrom:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+          annotations:
+            key: "annotations"
+          securityContext:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          affinity:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          nodeSelector:
+            key: "nodeSelector"
+          volumeMounts:
+          - volume:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            volumeMount:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            name: "name"
+          - volume:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            volumeMount:
+              integralNumber: true
+              double: true
+              valueNode: true
+              bigInteger: true
+              floatingPointNumber: true
+              float: true
+              nodeType: "ARRAY"
+              int: true
+              long: true
+              textual: true
+              missingNode: true
+              pojo: true
+              number: true
+              boolean: true
+              null: true
+              array: true
+              binary: true
+              containerNode: true
+              short: true
+              bigDecimal: true
+              object: true
+            name: "name"
+      savepointLocation:
+        rawFragment: "rawFragment"
+        userInfo: "userInfo"
+        opaque: true
+        scheme: "scheme"
+        query: "query"
+        schemeSpecificPart: "schemeSpecificPart"
+        rawUserInfo: "rawUserInfo"
+        path: "path"
+        fragment: "fragment"
+        rawPath: "rawPath"
+        port: 5
+        rawSchemeSpecificPart: "rawSchemeSpecificPart"
+        absolute: true
+        rawAuthority: "rawAuthority"
+        authority: "authority"
+        host: "host"
+        rawQuery: "rawQuery"
+      parallelism: 1
+      logging:
+        log4jLoggers:
+          key: "log4jLoggers"
+      numberOfTaskManagers: 6
+      resources:
+        key:
+          memory: "memory"
+          cpu: 2.3021358869347655
+      allowNonRestoredState: true
+      flinkConfiguration:
+        key: "flinkConfiguration"
+  JobStatus:
+    type: "object"
+    properties:
+      failure:
+        $ref: "#/definitions/Failure"
+      state:
+        type: "string"
+        enum:
+        - "STARTING"
+        - "STANDBY"
+        - "STARTED"
+        - "TERMINATING"
+        - "FAILED"
+        - "TERMINATED"
+        - "FINISHED"
+    title: "JobStatus"
+    example:
+      failure:
+        reason: "reason"
+        failedAt: "2000-01-23T04:56:07.000+00:00"
+        message: "message"
+      state: "STARTING"
+  JsonNode:
+    type: "object"
+    properties:
+      array:
+        type: "boolean"
+      bigDecimal:
+        type: "boolean"
+      bigInteger:
+        type: "boolean"
+      binary:
+        type: "boolean"
+      boolean:
+        type: "boolean"
+      containerNode:
+        type: "boolean"
+      double:
+        type: "boolean"
+      float:
+        type: "boolean"
+      floatingPointNumber:
+        type: "boolean"
+      int:
+        type: "boolean"
+      integralNumber:
+        type: "boolean"
+      long:
+        type: "boolean"
+      missingNode:
+        type: "boolean"
+      nodeType:
+        type: "string"
+        enum:
+        - "ARRAY"
+        - "BINARY"
+        - "BOOLEAN"
+        - "MISSING"
+        - "NULL"
+        - "NUMBER"
+        - "OBJECT"
+        - "POJO"
+        - "STRING"
+      null:
+        type: "boolean"
+      number:
+        type: "boolean"
+      object:
+        type: "boolean"
+      pojo:
+        type: "boolean"
+      short:
+        type: "boolean"
+      textual:
+        type: "boolean"
+      valueNode:
+        type: "boolean"
+    title: "JsonNode"
+    example:
+      integralNumber: true
+      double: true
+      valueNode: true
+      bigInteger: true
+      floatingPointNumber: true
+      float: true
+      nodeType: "ARRAY"
+      int: true
+      long: true
+      textual: true
+      missingNode: true
+      pojo: true
+      number: true
+      boolean: true
+      null: true
+      array: true
+      binary: true
+      containerNode: true
+      short: true
+      bigDecimal: true
+      object: true
+  KubernetesOptions:
+    type: "object"
+    properties:
+      pods:
+        $ref: "#/definitions/Pods"
+    title: "KubernetesOptions"
+    example:
+      pods:
+        tolerations:
+        - integralNumber: true
+          double: true
+          valueNode: true
+          bigInteger: true
+          floatingPointNumber: true
+          float: true
+          nodeType: "ARRAY"
+          int: true
+          long: true
+          textual: true
+          missingNode: true
+          pojo: true
+          number: true
+          boolean: true
+          null: true
+          array: true
+          binary: true
+          containerNode: true
+          short: true
+          bigDecimal: true
+          object: true
+        - integralNumber: true
+          double: true
+          valueNode: true
+          bigInteger: true
+          floatingPointNumber: true
+          float: true
+          nodeType: "ARRAY"
+          int: true
+          long: true
+          textual: true
+          missingNode: true
+          pojo: true
+          number: true
+          boolean: true
+          null: true
+          array: true
+          binary: true
+          containerNode: true
+          short: true
+          bigDecimal: true
+          object: true
+        imagePullSecrets:
+        - name: "name"
+        - name: "name"
+        envVars:
+        - name: "name"
+          value: "value"
+          valueFrom:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+        - name: "name"
+          value: "value"
+          valueFrom:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+        annotations:
+          key: "annotations"
+        securityContext:
+          integralNumber: true
+          double: true
+          valueNode: true
+          bigInteger: true
+          floatingPointNumber: true
+          float: true
+          nodeType: "ARRAY"
+          int: true
+          long: true
+          textual: true
+          missingNode: true
+          pojo: true
+          number: true
+          boolean: true
+          null: true
+          array: true
+          binary: true
+          containerNode: true
+          short: true
+          bigDecimal: true
+          object: true
+        affinity:
+          integralNumber: true
+          double: true
+          valueNode: true
+          bigInteger: true
+          floatingPointNumber: true
+          float: true
+          nodeType: "ARRAY"
+          int: true
+          long: true
+          textual: true
+          missingNode: true
+          pojo: true
+          number: true
+          boolean: true
+          null: true
+          array: true
+          binary: true
+          containerNode: true
+          short: true
+          bigDecimal: true
+          object: true
+        nodeSelector:
+          key: "nodeSelector"
+        volumeMounts:
+        - volume:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          volumeMount:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          name: "name"
+        - volume:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          volumeMount:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+          name: "name"
+  KubernetesTarget:
+    type: "object"
+    properties:
+      namespace:
+        type: "string"
+    title: "KubernetesTarget"
+    example:
+      namespace: "namespace"
+  License:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/LicenseMetadata"
+      spec:
+        $ref: "#/definitions/LicenseSpec"
+    title: "License"
+    example:
+      metadata:
+        createdAt: "2000-01-23T04:56:07.000+00:00"
+        annotations:
+          key: "annotations"
+        id:
+          uuid: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      apiVersion: "apiVersion"
+      kind: "kind"
+      spec:
+        expires: "2000-01-23T04:56:07.000+00:00"
+        licenseId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        params:
+          key: "params"
+        licensedTo: "licensedTo"
+  LicenseId:
+    type: "object"
+    properties:
+      uuid:
+        type: "string"
+        format: "uuid"
+    title: "LicenseId"
+    example:
+      uuid: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+  LicenseMetadata:
+    type: "object"
+    properties:
+      annotations:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      id:
+        $ref: "#/definitions/LicenseId"
+    title: "LicenseMetadata"
+    example:
+      createdAt: "2000-01-23T04:56:07.000+00:00"
+      annotations:
+        key: "annotations"
+      id:
+        uuid: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+  LicenseSpec:
+    type: "object"
+    properties:
+      expires:
+        type: "string"
+        format: "date-time"
+      licenseId:
+        type: "string"
+        format: "uuid"
+      licensedTo:
+        type: "string"
+      params:
+        type: "object"
+        additionalProperties:
+          type: "string"
+    title: "LicenseSpec"
+    example:
+      expires: "2000-01-23T04:56:07.000+00:00"
+      licenseId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      params:
+        key: "params"
+      licensedTo: "licensedTo"
+  LocalObjectReference:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+    title: "LocalObjectReference"
+    example:
+      name: "name"
+  Logging:
+    type: "object"
+    properties:
+      log4jLoggers:
+        type: "object"
+        additionalProperties:
+          type: "string"
+    title: "Logging"
+    example:
+      log4jLoggers:
+        key: "log4jLoggers"
+  ObjectNode:
+    type: "object"
+    properties:
+      array:
+        type: "boolean"
+      bigDecimal:
+        type: "boolean"
+      bigInteger:
+        type: "boolean"
+      binary:
+        type: "boolean"
+      boolean:
+        type: "boolean"
+      containerNode:
+        type: "boolean"
+      double:
+        type: "boolean"
+      float:
+        type: "boolean"
+      floatingPointNumber:
+        type: "boolean"
+      int:
+        type: "boolean"
+      integralNumber:
+        type: "boolean"
+      long:
+        type: "boolean"
+      missingNode:
+        type: "boolean"
+      nodeType:
+        type: "string"
+        enum:
+        - "ARRAY"
+        - "BINARY"
+        - "BOOLEAN"
+        - "MISSING"
+        - "NULL"
+        - "NUMBER"
+        - "OBJECT"
+        - "POJO"
+        - "STRING"
+      null:
+        type: "boolean"
+      number:
+        type: "boolean"
+      object:
+        type: "boolean"
+      pojo:
+        type: "boolean"
+      short:
+        type: "boolean"
+      textual:
+        type: "boolean"
+      valueNode:
+        type: "boolean"
+    title: "ObjectNode"
+  Pods:
+    type: "object"
+    properties:
+      affinity:
+        $ref: "#/definitions/JsonNode"
+      annotations:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      envVars:
+        type: "array"
+        items:
+          $ref: "#/definitions/EnvVar"
+      imagePullSecrets:
+        type: "array"
+        items:
+          $ref: "#/definitions/LocalObjectReference"
+      nodeSelector:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      securityContext:
+        $ref: "#/definitions/JsonNode"
+      tolerations:
+        type: "array"
+        items:
+          $ref: "#/definitions/JsonNode"
+      volumeMounts:
+        type: "array"
+        items:
+          $ref: "#/definitions/VolumeAndMount"
+    title: "Pods"
+    example:
+      tolerations:
+      - integralNumber: true
+        double: true
+        valueNode: true
+        bigInteger: true
+        floatingPointNumber: true
+        float: true
+        nodeType: "ARRAY"
+        int: true
+        long: true
+        textual: true
+        missingNode: true
+        pojo: true
+        number: true
+        boolean: true
+        null: true
+        array: true
+        binary: true
+        containerNode: true
+        short: true
+        bigDecimal: true
+        object: true
+      - integralNumber: true
+        double: true
+        valueNode: true
+        bigInteger: true
+        floatingPointNumber: true
+        float: true
+        nodeType: "ARRAY"
+        int: true
+        long: true
+        textual: true
+        missingNode: true
+        pojo: true
+        number: true
+        boolean: true
+        null: true
+        array: true
+        binary: true
+        containerNode: true
+        short: true
+        bigDecimal: true
+        object: true
+      imagePullSecrets:
+      - name: "name"
+      - name: "name"
+      envVars:
+      - name: "name"
+        value: "value"
+        valueFrom:
+          integralNumber: true
+          double: true
+          valueNode: true
+          bigInteger: true
+          floatingPointNumber: true
+          float: true
+          nodeType: "ARRAY"
+          int: true
+          long: true
+          textual: true
+          missingNode: true
+          pojo: true
+          number: true
+          boolean: true
+          null: true
+          array: true
+          binary: true
+          containerNode: true
+          short: true
+          bigDecimal: true
+          object: true
+      - name: "name"
+        value: "value"
+        valueFrom:
+          integralNumber: true
+          double: true
+          valueNode: true
+          bigInteger: true
+          floatingPointNumber: true
+          float: true
+          nodeType: "ARRAY"
+          int: true
+          long: true
+          textual: true
+          missingNode: true
+          pojo: true
+          number: true
+          boolean: true
+          null: true
+          array: true
+          binary: true
+          containerNode: true
+          short: true
+          bigDecimal: true
+          object: true
+      annotations:
+        key: "annotations"
+      securityContext:
+        integralNumber: true
+        double: true
+        valueNode: true
+        bigInteger: true
+        floatingPointNumber: true
+        float: true
+        nodeType: "ARRAY"
+        int: true
+        long: true
+        textual: true
+        missingNode: true
+        pojo: true
+        number: true
+        boolean: true
+        null: true
+        array: true
+        binary: true
+        containerNode: true
+        short: true
+        bigDecimal: true
+        object: true
+      affinity:
+        integralNumber: true
+        double: true
+        valueNode: true
+        bigInteger: true
+        floatingPointNumber: true
+        float: true
+        nodeType: "ARRAY"
+        int: true
+        long: true
+        textual: true
+        missingNode: true
+        pojo: true
+        number: true
+        boolean: true
+        null: true
+        array: true
+        binary: true
+        containerNode: true
+        short: true
+        bigDecimal: true
+        object: true
+      nodeSelector:
+        key: "nodeSelector"
+      volumeMounts:
+      - volume:
+          integralNumber: true
+          double: true
+          valueNode: true
+          bigInteger: true
+          floatingPointNumber: true
+          float: true
+          nodeType: "ARRAY"
+          int: true
+          long: true
+          textual: true
+          missingNode: true
+          pojo: true
+          number: true
+          boolean: true
+          null: true
+          array: true
+          binary: true
+          containerNode: true
+          short: true
+          bigDecimal: true
+          object: true
+        volumeMount:
+          integralNumber: true
+          double: true
+          valueNode: true
+          bigInteger: true
+          floatingPointNumber: true
+          float: true
+          nodeType: "ARRAY"
+          int: true
+          long: true
+          textual: true
+          missingNode: true
+          pojo: true
+          number: true
+          boolean: true
+          null: true
+          array: true
+          binary: true
+          containerNode: true
+          short: true
+          bigDecimal: true
+          object: true
+        name: "name"
+      - volume:
+          integralNumber: true
+          double: true
+          valueNode: true
+          bigInteger: true
+          floatingPointNumber: true
+          float: true
+          nodeType: "ARRAY"
+          int: true
+          long: true
+          textual: true
+          missingNode: true
+          pojo: true
+          number: true
+          boolean: true
+          null: true
+          array: true
+          binary: true
+          containerNode: true
+          short: true
+          bigDecimal: true
+          object: true
+        volumeMount:
+          integralNumber: true
+          double: true
+          valueNode: true
+          bigInteger: true
+          floatingPointNumber: true
+          float: true
+          nodeType: "ARRAY"
+          int: true
+          long: true
+          textual: true
+          missingNode: true
+          pojo: true
+          number: true
+          boolean: true
+          null: true
+          array: true
+          binary: true
+          containerNode: true
+          short: true
+          bigDecimal: true
+          object: true
+        name: "name"
+  ResourceListMetadata:
+    type: "object"
+    title: "ResourceListMetadata"
+  ResourceList«DeploymentTarget»:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/DeploymentTarget"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/ResourceListMetadata"
+    title: "ResourceList«DeploymentTarget»"
+    example:
+      metadata: {}
+      apiVersion: "apiVersion"
+      kind: "kind"
+      items:
+      - metadata:
+          createdAt: "2000-01-23T04:56:07.000+00:00"
+          modifiedAt: "2000-01-23T04:56:07.000+00:00"
+          resourceVersion: 0
+          name: "name"
+          namespace: "namespace"
+          annotations:
+            key: "annotations"
+          id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          labels:
+            key: "labels"
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          kubernetes:
+            namespace: "namespace"
+          deploymentPatchSet:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+      - metadata:
+          createdAt: "2000-01-23T04:56:07.000+00:00"
+          modifiedAt: "2000-01-23T04:56:07.000+00:00"
+          resourceVersion: 0
+          name: "name"
+          namespace: "namespace"
+          annotations:
+            key: "annotations"
+          id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          labels:
+            key: "labels"
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          kubernetes:
+            namespace: "namespace"
+          deploymentPatchSet:
+            integralNumber: true
+            double: true
+            valueNode: true
+            bigInteger: true
+            floatingPointNumber: true
+            float: true
+            nodeType: "ARRAY"
+            int: true
+            long: true
+            textual: true
+            missingNode: true
+            pojo: true
+            number: true
+            boolean: true
+            null: true
+            array: true
+            binary: true
+            containerNode: true
+            short: true
+            bigDecimal: true
+            object: true
+  ResourceList«Deployment»:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/Deployment"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/ResourceListMetadata"
+    title: "ResourceList«Deployment»"
+    example:
+      metadata: {}
+      apiVersion: "apiVersion"
+      kind: "kind"
+      items:
+      - metadata:
+          createdAt: "2000-01-23T04:56:07.000+00:00"
+          modifiedAt: "2000-01-23T04:56:07.000+00:00"
+          resourceVersion: 0
+          name: "name"
+          namespace: "namespace"
+          annotations:
+            key: "annotations"
+          id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          labels:
+            key: "labels"
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          template:
+            metadata:
+              annotations:
+                key: "annotations"
+            spec:
+              artifact:
+                kind: "kind"
+              kubernetes:
+                pods:
+                  tolerations:
+                  - integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  - integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  imagePullSecrets:
+                  - name: "name"
+                  - name: "name"
+                  envVars:
+                  - name: "name"
+                    value: "value"
+                    valueFrom:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                  - name: "name"
+                    value: "value"
+                    valueFrom:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                  annotations:
+                    key: "annotations"
+                  securityContext:
+                    integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  affinity:
+                    integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  nodeSelector:
+                    key: "nodeSelector"
+                  volumeMounts:
+                  - volume:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                    volumeMount:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                    name: "name"
+                  - volume:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                    volumeMount:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                    name: "name"
+              parallelism: 5
+              numberOfTaskManagers: 5
+              resources:
+                key:
+                  memory: "memory"
+                  cpu: 2.3021358869347655
+              logging:
+                log4jLoggers:
+                  key: "log4jLoggers"
+              flinkConfiguration:
+                key: "flinkConfiguration"
+          restoreStrategy:
+            kind: "kind"
+          state: "RUNNING"
+          upgradeStrategy:
+            kind: "kind"
+          maxSavepointCreationAttempts: 6
+          maxJobCreationAttempts: 1
+          deploymentTargetId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        status:
+          state: "RUNNING"
+      - metadata:
+          createdAt: "2000-01-23T04:56:07.000+00:00"
+          modifiedAt: "2000-01-23T04:56:07.000+00:00"
+          resourceVersion: 0
+          name: "name"
+          namespace: "namespace"
+          annotations:
+            key: "annotations"
+          id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          labels:
+            key: "labels"
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          template:
+            metadata:
+              annotations:
+                key: "annotations"
+            spec:
+              artifact:
+                kind: "kind"
+              kubernetes:
+                pods:
+                  tolerations:
+                  - integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  - integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  imagePullSecrets:
+                  - name: "name"
+                  - name: "name"
+                  envVars:
+                  - name: "name"
+                    value: "value"
+                    valueFrom:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                  - name: "name"
+                    value: "value"
+                    valueFrom:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                  annotations:
+                    key: "annotations"
+                  securityContext:
+                    integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  affinity:
+                    integralNumber: true
+                    double: true
+                    valueNode: true
+                    bigInteger: true
+                    floatingPointNumber: true
+                    float: true
+                    nodeType: "ARRAY"
+                    int: true
+                    long: true
+                    textual: true
+                    missingNode: true
+                    pojo: true
+                    number: true
+                    boolean: true
+                    null: true
+                    array: true
+                    binary: true
+                    containerNode: true
+                    short: true
+                    bigDecimal: true
+                    object: true
+                  nodeSelector:
+                    key: "nodeSelector"
+                  volumeMounts:
+                  - volume:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                    volumeMount:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                    name: "name"
+                  - volume:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                    volumeMount:
+                      integralNumber: true
+                      double: true
+                      valueNode: true
+                      bigInteger: true
+                      floatingPointNumber: true
+                      float: true
+                      nodeType: "ARRAY"
+                      int: true
+                      long: true
+                      textual: true
+                      missingNode: true
+                      pojo: true
+                      number: true
+                      boolean: true
+                      null: true
+                      array: true
+                      binary: true
+                      containerNode: true
+                      short: true
+                      bigDecimal: true
+                      object: true
+                    name: "name"
+              parallelism: 5
+              numberOfTaskManagers: 5
+              resources:
+                key:
+                  memory: "memory"
+                  cpu: 2.3021358869347655
+              logging:
+                log4jLoggers:
+                  key: "log4jLoggers"
+              flinkConfiguration:
+                key: "flinkConfiguration"
+          restoreStrategy:
+            kind: "kind"
+          state: "RUNNING"
+          upgradeStrategy:
+            kind: "kind"
+          maxSavepointCreationAttempts: 6
+          maxJobCreationAttempts: 1
+          deploymentTargetId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        status:
+          state: "RUNNING"
+  ResourceList«Event»:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/Event"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/ResourceListMetadata"
+    title: "ResourceList«Event»"
+    example:
+      metadata: {}
+      apiVersion: "apiVersion"
+      kind: "kind"
+      items:
+      - metadata:
+          createdAt: "2000-01-23T04:56:07.000+00:00"
+          jobId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          deploymentId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          resourceVersion: 0
+          name: "STATE_TRANSITION_IS_NEEDED"
+          namespace: "namespace"
+          id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          message: "message"
+      - metadata:
+          createdAt: "2000-01-23T04:56:07.000+00:00"
+          jobId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          deploymentId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          resourceVersion: 0
+          name: "STATE_TRANSITION_IS_NEEDED"
+          namespace: "namespace"
+          id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          message: "message"
+  ResourceList«Job»:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/Job"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/ResourceListMetadata"
+    title: "ResourceList«Job»"
+    example:
+      metadata: {}
+      apiVersion: "apiVersion"
+      kind: "kind"
+      items:
+      - metadata:
+          createdAt: "2000-01-23T04:56:07.000+00:00"
+          terminatedAt: "2000-01-23T04:56:07.000+00:00"
+          modifiedAt: "2000-01-23T04:56:07.000+00:00"
+          deploymentId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          resourceVersion: 0
+          namespace: "namespace"
+          annotations:
+            key: "annotations"
+          id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          artifact:
+            kind: "kind"
+          deploymentTarget:
+            kubernetes:
+              namespace: "namespace"
+          kubernetes:
+            pods:
+              tolerations:
+              - integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              - integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              imagePullSecrets:
+              - name: "name"
+              - name: "name"
+              envVars:
+              - name: "name"
+                value: "value"
+                valueFrom:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+              - name: "name"
+                value: "value"
+                valueFrom:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+              annotations:
+                key: "annotations"
+              securityContext:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              affinity:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              nodeSelector:
+                key: "nodeSelector"
+              volumeMounts:
+              - volume:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                volumeMount:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                name: "name"
+              - volume:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                volumeMount:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                name: "name"
+          savepointLocation:
+            rawFragment: "rawFragment"
+            userInfo: "userInfo"
+            opaque: true
+            scheme: "scheme"
+            query: "query"
+            schemeSpecificPart: "schemeSpecificPart"
+            rawUserInfo: "rawUserInfo"
+            path: "path"
+            fragment: "fragment"
+            rawPath: "rawPath"
+            port: 5
+            rawSchemeSpecificPart: "rawSchemeSpecificPart"
+            absolute: true
+            rawAuthority: "rawAuthority"
+            authority: "authority"
+            host: "host"
+            rawQuery: "rawQuery"
+          parallelism: 1
+          logging:
+            log4jLoggers:
+              key: "log4jLoggers"
+          numberOfTaskManagers: 6
+          resources:
+            key:
+              memory: "memory"
+              cpu: 2.3021358869347655
+          allowNonRestoredState: true
+          flinkConfiguration:
+            key: "flinkConfiguration"
+        status:
+          failure:
+            reason: "reason"
+            failedAt: "2000-01-23T04:56:07.000+00:00"
+            message: "message"
+          state: "STARTING"
+      - metadata:
+          createdAt: "2000-01-23T04:56:07.000+00:00"
+          terminatedAt: "2000-01-23T04:56:07.000+00:00"
+          modifiedAt: "2000-01-23T04:56:07.000+00:00"
+          deploymentId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          resourceVersion: 0
+          namespace: "namespace"
+          annotations:
+            key: "annotations"
+          id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          artifact:
+            kind: "kind"
+          deploymentTarget:
+            kubernetes:
+              namespace: "namespace"
+          kubernetes:
+            pods:
+              tolerations:
+              - integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              - integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              imagePullSecrets:
+              - name: "name"
+              - name: "name"
+              envVars:
+              - name: "name"
+                value: "value"
+                valueFrom:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+              - name: "name"
+                value: "value"
+                valueFrom:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+              annotations:
+                key: "annotations"
+              securityContext:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              affinity:
+                integralNumber: true
+                double: true
+                valueNode: true
+                bigInteger: true
+                floatingPointNumber: true
+                float: true
+                nodeType: "ARRAY"
+                int: true
+                long: true
+                textual: true
+                missingNode: true
+                pojo: true
+                number: true
+                boolean: true
+                null: true
+                array: true
+                binary: true
+                containerNode: true
+                short: true
+                bigDecimal: true
+                object: true
+              nodeSelector:
+                key: "nodeSelector"
+              volumeMounts:
+              - volume:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                volumeMount:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                name: "name"
+              - volume:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                volumeMount:
+                  integralNumber: true
+                  double: true
+                  valueNode: true
+                  bigInteger: true
+                  floatingPointNumber: true
+                  float: true
+                  nodeType: "ARRAY"
+                  int: true
+                  long: true
+                  textual: true
+                  missingNode: true
+                  pojo: true
+                  number: true
+                  boolean: true
+                  null: true
+                  array: true
+                  binary: true
+                  containerNode: true
+                  short: true
+                  bigDecimal: true
+                  object: true
+                name: "name"
+          savepointLocation:
+            rawFragment: "rawFragment"
+            userInfo: "userInfo"
+            opaque: true
+            scheme: "scheme"
+            query: "query"
+            schemeSpecificPart: "schemeSpecificPart"
+            rawUserInfo: "rawUserInfo"
+            path: "path"
+            fragment: "fragment"
+            rawPath: "rawPath"
+            port: 5
+            rawSchemeSpecificPart: "rawSchemeSpecificPart"
+            absolute: true
+            rawAuthority: "rawAuthority"
+            authority: "authority"
+            host: "host"
+            rawQuery: "rawQuery"
+          parallelism: 1
+          logging:
+            log4jLoggers:
+              key: "log4jLoggers"
+          numberOfTaskManagers: 6
+          resources:
+            key:
+              memory: "memory"
+              cpu: 2.3021358869347655
+          allowNonRestoredState: true
+          flinkConfiguration:
+            key: "flinkConfiguration"
+        status:
+          failure:
+            reason: "reason"
+            failedAt: "2000-01-23T04:56:07.000+00:00"
+            message: "message"
+          state: "STARTING"
+  ResourceList«Savepoint»:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/Savepoint"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/ResourceListMetadata"
+    title: "ResourceList«Savepoint»"
+  ResourceList«SecretValue»:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/SecretValue"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/ResourceListMetadata"
+    title: "ResourceList«SecretValue»"
+    example:
+      metadata: {}
+      apiVersion: "apiVersion"
+      kind: "kind"
+      items:
+      - metadata:
+          createdAt: "2000-01-23T04:56:07.000+00:00"
+          modifiedAt: "2000-01-23T04:56:07.000+00:00"
+          resourceVersion: 0
+          name: "name"
+          namespace: "namespace"
+          annotations:
+            key: "annotations"
+          id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          labels:
+            key: "labels"
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          kind: "kind"
+      - metadata:
+          createdAt: "2000-01-23T04:56:07.000+00:00"
+          modifiedAt: "2000-01-23T04:56:07.000+00:00"
+          resourceVersion: 0
+          name: "name"
+          namespace: "namespace"
+          annotations:
+            key: "annotations"
+          id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          labels:
+            key: "labels"
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          kind: "kind"
+  ResourceQuota:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      kind:
+        type: "string"
+      spec:
+        $ref: "#/definitions/ResourceQuotaSpec"
+      status:
+        $ref: "#/definitions/ResourceQuotaStatus"
+    title: "ResourceQuota"
+    example:
+      apiVersion: "apiVersion"
+      kind: "kind"
+      spec:
+        toleratedOveruse:
+          cpu: 0.8008281904610115
+        type: "LIMITED"
+        limits:
+          cpu: 0.8008281904610115
+      status:
+        used:
+          cpu: 0.8008281904610115
+  ResourceQuotaQuantity:
+    type: "object"
+    properties:
+      cpu:
+        type: "number"
+        format: "double"
+    title: "ResourceQuotaQuantity"
+    example:
+      cpu: 0.8008281904610115
+  ResourceQuotaSpec:
+    type: "object"
+    properties:
+      limits:
+        $ref: "#/definitions/ResourceQuotaQuantity"
+      toleratedOveruse:
+        $ref: "#/definitions/ResourceQuotaQuantity"
+      type:
+        type: "string"
+        enum:
+        - "LIMITED"
+        - "UNLIMITED"
+    title: "ResourceQuotaSpec"
+    example:
+      toleratedOveruse:
+        cpu: 0.8008281904610115
+      type: "LIMITED"
+      limits:
+        cpu: 0.8008281904610115
+  ResourceQuotaStatus:
+    type: "object"
+    properties:
+      used:
+        $ref: "#/definitions/ResourceQuotaQuantity"
+    title: "ResourceQuotaStatus"
+    example:
+      used:
+        cpu: 0.8008281904610115
+  ResourceSpec:
+    type: "object"
+    properties:
+      cpu:
+        type: "number"
+        format: "double"
+      memory:
+        type: "string"
+    title: "ResourceSpec"
+    example:
+      memory: "memory"
+      cpu: 2.3021358869347655
+  RevisionInformation:
+    type: "object"
+    properties:
+      buildTime:
+        type: "string"
+      buildVersion:
+        type: "string"
+      commitShaLong:
+        type: "string"
+      commitShaShort:
+        type: "string"
+    title: "RevisionInformation"
+    example:
+      buildVersion: "buildVersion"
+      buildTime: "buildTime"
+      commitShaLong: "commitShaLong"
+      commitShaShort: "commitShaShort"
+  Savepoint:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/SavepointMetadata"
+      spec:
+        $ref: "#/definitions/SavepointSpec"
+      status:
+        $ref: "#/definitions/SavepointStatus"
+    title: "Savepoint"
+    example:
+      metadata:
+        createdAt: "2000-01-23T04:56:07.000+00:00"
+        jobId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        modifiedAt: "2000-01-23T04:56:07.000+00:00"
+        deploymentId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        origin: "USER_REQUEST"
+        resourceVersion: 0
+        namespace: "namespace"
+        annotations:
+          key: "annotations"
+        id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      apiVersion: "apiVersion"
+      kind: "kind"
+      spec:
+        flinkSavepointId:
+          uuid: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        savepointLocation: "savepointLocation"
+      status:
+        failure:
+          reason: "reason"
+          failedAt: "2000-01-23T04:56:07.000+00:00"
+          message: "message"
+        state: "STARTED"
+  SavepointMetadata:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      namespace:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      modifiedAt:
+        type: "string"
+        format: "date-time"
+      deploymentId:
+        type: "string"
+        format: "uuid"
+      jobId:
+        type: "string"
+        format: "uuid"
+      origin:
+        type: "string"
+        enum:
+        - "USER_REQUEST"
+        - "SUSPEND_AND_UPGRADE"
+        - "SUSPEND"
+        - "COPIED"
+      annotations:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      resourceVersion:
+        type: "integer"
+        format: "int32"
+    title: "SavepointMetadata"
+    example:
+      createdAt: "2000-01-23T04:56:07.000+00:00"
+      jobId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      modifiedAt: "2000-01-23T04:56:07.000+00:00"
+      deploymentId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      origin: "USER_REQUEST"
+      resourceVersion: 0
+      namespace: "namespace"
+      annotations:
+        key: "annotations"
+      id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+  SavepointSpec:
+    type: "object"
+    properties:
+      savepointLocation:
+        type: "string"
+      flinkSavepointId:
+        $ref: "#/definitions/FlinkSavepointId"
+    title: "SavepointSpec"
+    example:
+      flinkSavepointId:
+        uuid: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      savepointLocation: "savepointLocation"
+  SavepointStatus:
+    type: "object"
+    properties:
+      state:
+        type: "string"
+        enum:
+        - "STARTED"
+        - "COMPLETED"
+        - "FAILED"
+      failure:
+        $ref: "#/definitions/Failure"
+    title: "SavepointStatus"
+    example:
+      failure:
+        reason: "reason"
+        failedAt: "2000-01-23T04:56:07.000+00:00"
+        message: "message"
+      state: "STARTED"
+  SecretValue:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      kind:
+        type: "string"
+      metadata:
+        $ref: "#/definitions/SecretValueMetadata"
+      spec:
+        $ref: "#/definitions/SecretValueSpec"
+    title: "SecretValue"
+    example:
+      metadata:
+        createdAt: "2000-01-23T04:56:07.000+00:00"
+        modifiedAt: "2000-01-23T04:56:07.000+00:00"
+        resourceVersion: 0
+        name: "name"
+        namespace: "namespace"
+        annotations:
+          key: "annotations"
+        id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        labels:
+          key: "labels"
+      apiVersion: "apiVersion"
+      kind: "kind"
+      spec:
+        kind: "kind"
+  SecretValueMetadata:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      name:
+        type: "string"
+      namespace:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      modifiedAt:
+        type: "string"
+        format: "date-time"
+      resourceVersion:
+        type: "integer"
+        format: "int32"
+      labels:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      annotations:
+        type: "object"
+        additionalProperties:
+          type: "string"
+    title: "SecretValueMetadata"
+    example:
+      createdAt: "2000-01-23T04:56:07.000+00:00"
+      modifiedAt: "2000-01-23T04:56:07.000+00:00"
+      resourceVersion: 0
+      name: "name"
+      namespace: "namespace"
+      annotations:
+        key: "annotations"
+      id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      labels:
+        key: "labels"
+  SecretValueSpec:
+    type: "object"
+    properties:
+      kind:
+        type: "string"
+    title: "SecretValueSpec"
+    example:
+      kind: "kind"
+  SystemInformation:
+    type: "object"
+    properties:
+      apiVersion:
+        type: "string"
+      kind:
+        type: "string"
+      status:
+        $ref: "#/definitions/SystemInformationStatus"
+    title: "SystemInformation"
+    example:
+      apiVersion: "apiVersion"
+      kind: "kind"
+      status:
+        license:
+          metadata:
+            createdAt: "2000-01-23T04:56:07.000+00:00"
+            annotations:
+              key: "annotations"
+            id:
+              uuid: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          apiVersion: "apiVersion"
+          kind: "kind"
+          spec:
+            expires: "2000-01-23T04:56:07.000+00:00"
+            licenseId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+            params:
+              key: "params"
+            licensedTo: "licensedTo"
+        resourceQuota:
+          apiVersion: "apiVersion"
+          kind: "kind"
+          spec:
+            toleratedOveruse:
+              cpu: 0.8008281904610115
+            type: "LIMITED"
+            limits:
+              cpu: 0.8008281904610115
+          status:
+            used:
+              cpu: 0.8008281904610115
+        jvmVersion: "jvmVersion"
+        revisionInformation:
+          buildVersion: "buildVersion"
+          buildTime: "buildTime"
+          commitShaLong: "commitShaLong"
+          commitShaShort: "commitShaShort"
+  SystemInformationStatus:
+    type: "object"
+    properties:
+      jvmVersion:
+        type: "string"
+      license:
+        $ref: "#/definitions/License"
+      resourceQuota:
+        $ref: "#/definitions/ResourceQuota"
+      revisionInformation:
+        $ref: "#/definitions/RevisionInformation"
+    title: "SystemInformationStatus"
+    example:
+      license:
+        metadata:
+          createdAt: "2000-01-23T04:56:07.000+00:00"
+          annotations:
+            key: "annotations"
+          id:
+            uuid: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          expires: "2000-01-23T04:56:07.000+00:00"
+          licenseId: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+          params:
+            key: "params"
+          licensedTo: "licensedTo"
+      resourceQuota:
+        apiVersion: "apiVersion"
+        kind: "kind"
+        spec:
+          toleratedOveruse:
+            cpu: 0.8008281904610115
+          type: "LIMITED"
+          limits:
+            cpu: 0.8008281904610115
+        status:
+          used:
+            cpu: 0.8008281904610115
+      jvmVersion: "jvmVersion"
+      revisionInformation:
+        buildVersion: "buildVersion"
+        buildTime: "buildTime"
+        commitShaLong: "commitShaLong"
+        commitShaShort: "commitShaShort"
+  URI:
+    type: "object"
+    properties:
+      absolute:
+        type: "boolean"
+      authority:
+        type: "string"
+      fragment:
+        type: "string"
+      host:
+        type: "string"
+      opaque:
+        type: "boolean"
+      path:
+        type: "string"
+      port:
+        type: "integer"
+        format: "int32"
+      query:
+        type: "string"
+      rawAuthority:
+        type: "string"
+      rawFragment:
+        type: "string"
+      rawPath:
+        type: "string"
+      rawQuery:
+        type: "string"
+      rawSchemeSpecificPart:
+        type: "string"
+      rawUserInfo:
+        type: "string"
+      scheme:
+        type: "string"
+      schemeSpecificPart:
+        type: "string"
+      userInfo:
+        type: "string"
+    title: "URI"
+    example:
+      rawFragment: "rawFragment"
+      userInfo: "userInfo"
+      opaque: true
+      scheme: "scheme"
+      query: "query"
+      schemeSpecificPart: "schemeSpecificPart"
+      rawUserInfo: "rawUserInfo"
+      path: "path"
+      fragment: "fragment"
+      rawPath: "rawPath"
+      port: 5
+      rawSchemeSpecificPart: "rawSchemeSpecificPart"
+      absolute: true
+      rawAuthority: "rawAuthority"
+      authority: "authority"
+      host: "host"
+      rawQuery: "rawQuery"
+  VolumeAndMount:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      volume:
+        $ref: "#/definitions/JsonNode"
+      volumeMount:
+        $ref: "#/definitions/JsonNode"
+    title: "VolumeAndMount"
+    example:
+      volume:
+        integralNumber: true
+        double: true
+        valueNode: true
+        bigInteger: true
+        floatingPointNumber: true
+        float: true
+        nodeType: "ARRAY"
+        int: true
+        long: true
+        textual: true
+        missingNode: true
+        pojo: true
+        number: true
+        boolean: true
+        null: true
+        array: true
+        binary: true
+        containerNode: true
+        short: true
+        bigDecimal: true
+        object: true
+      volumeMount:
+        integralNumber: true
+        double: true
+        valueNode: true
+        bigInteger: true
+        floatingPointNumber: true
+        float: true
+        nodeType: "ARRAY"
+        int: true
+        long: true
+        textual: true
+        missingNode: true
+        pojo: true
+        number: true
+        boolean: true
+        null: true
+        array: true
+        binary: true
+        containerNode: true
+        short: true
+        bigDecimal: true
+        object: true
+      name: "name"
