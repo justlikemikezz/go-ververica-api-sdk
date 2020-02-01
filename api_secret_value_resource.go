@@ -394,7 +394,7 @@ SecretValueResourceApiService Update a secret value
 
 @return SecretValue
 */
-func (a *SecretValueResourceApiService) UpdateSecretValueUsingPATCH(ctx context.Context, body ComDataartisansAppmanagerApiV1EntitySecretvalueSecretValue, name string, namespace string) (SecretValue, *http.Response, error) {
+func (a *SecretValueResourceApiService) UpdateSecretValueUsingPATCH(ctx context.Context, body interface{}, name string, namespace string) (SecretValue, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}

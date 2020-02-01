@@ -406,7 +406,7 @@ DeploymentResourceApiService Update a deployment
 
 @return Deployment
 */
-func (a *DeploymentResourceApiService) UpdateDeploymentUsingPATCH(ctx context.Context, body ComDataartisansAppmanagerApiV1EntityDeploymentDeployment, deploymentId string, namespace string) (Deployment, *http.Response, error) {
+func (a *DeploymentResourceApiService) UpdateDeploymentUsingPATCH(ctx context.Context, body interface{}, deploymentId string, namespace string) (Deployment, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
