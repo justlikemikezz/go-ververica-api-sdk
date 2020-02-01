@@ -10,13 +10,9 @@
 
 package vapi
 
-import (
-	"time"
-)
-
 type LicenseSpec struct {
-	Expires string `json:"expires,omitempty"`
-	LicenseId string `json:"licenseId,omitempty"`
-	LicensedTo string `json:"licensedTo,omitempty"`
-	Params map[string]string `json:"params,omitempty"`
+	Expires    string            `json:"expires,omitempty"`
+	LicenseId  string            `json:"licenseId,omitempty"`
+	LicensedTo string            `json:"licensedTo,omitempty"`
+	Params     map[string]string `json:"params,omitempty"`
 }
