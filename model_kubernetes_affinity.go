@@ -6,14 +6,14 @@ type Affinity struct {
 }
 
 type NodeAffinity struct {
-  RequiredDuringSchedulingIgnoredDuringExecution *NodeSelectorTerms `json:"requiredDuringScedulingIgnoredDuringExecution,omitemtpy`
+  RequiredDuringSchedulingIgnoredDuringExecution *RequiredDuringSchedulingIgnoredDuringExecution `json:"requiredDuringScedulingIgnoredDuringExecution,omitemtpy`
 }
 
 type RequiredDuringSchedulingIgnoredDuringExecution struct {
   NodeSelectorTerms []NodeSelectorTerms `json:"nodeSelectorTerms,omitempty"`
 }
 type NodeSelectorTerms struct {
-  MatchExpressions MatchExpressions `json:"matchExpressions,omitempty"`
+  MatchExpressions *MatchExpressions `json:"matchExpressions,omitempty"`
 }
 
 type MatchExpressions struct {
