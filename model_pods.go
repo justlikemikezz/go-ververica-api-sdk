@@ -11,12 +11,12 @@
 package vapi
 
 type Pods struct {
-	Affinity *JsonNode `json:"affinity,omitempty"`
+	Affinity *Affinity `json:"affinity,omitempty"`
 	Annotations map[string]string `json:"annotations,omitempty"`
 	EnvVars []EnvVar `json:"envVars,omitempty"`
 	ImagePullSecrets []LocalObjectReference `json:"imagePullSecrets,omitempty"`
 	NodeSelector map[string]string `json:"nodeSelector,omitempty"`
 	SecurityContext *JsonNode `json:"securityContext,omitempty"`
-	Tolerations []JsonNode `json:"tolerations,omitempty"`
+	Tolerations []Toleration `json:"tolerations,omitempty"`
 	VolumeMounts []VolumeAndMount `json:"volumeMounts,omitempty"`
 }

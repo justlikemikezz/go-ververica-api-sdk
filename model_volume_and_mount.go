@@ -13,5 +13,5 @@ package vapi
 type VolumeAndMount struct {
 	Name string `json:"name,omitempty"`
 	Volume *JsonNode `json:"volume,omitempty"`
-	VolumeMount *JsonNode `json:"volumeMount,omitempty"`
+	VolumeMount *JsonNode `json:"volumeMount,omitempty"` //TODO: change me in the future
 }

@@ -12,4 +12,10 @@ package vapi
 
 type Artifact struct {
 	Kind string `json:"kind,omitempty"`
+	JarUri string `json:"jarUri,omitempty"`
+	MainArgs string `json:"mainArgs,omitempty"`
+	FlinkVersion float64 `json:"flinkVersion,omitempty"`
+	FlinkImageResgistry string `json:"flinkImageRegistry,omitempty"`
+	FLinkImageRepository string `json:"flinkImageRepository,omitempty"`
+	FlinkImageTag string `json:"flinkImageTag,omitempty"`
 }

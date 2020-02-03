@@ -13,5 +13,13 @@ package vapi
 type EnvVar struct {
 	Name string `json:"name,omitempty"`
 	Value string `json:"value,omitempty"`
-	ValueFrom *JsonNode `json:"valueFrom,omitempty"`
+	ValueFrom *ValueFrom `json:"valueFrom,omitempty"`
+}
+
+type ValueFrom struct {
+	FieldRef *FieldRef `json:"fieldRef,omitempty"`
+}
+
+type FieldRef struct {
+	FieldPath string `json:"fieldPath,omitempty"`
 }
