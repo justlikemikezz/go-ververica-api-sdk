@@ -2,11 +2,11 @@ package vapi
 
 
 type Affinity struct {
-  NodeAffinity *NodeAffinity `json:"nodeAffinity,omitonempty"`
+  NodeAffinity *NodeAffinity `json:"nodeAffinity,omitempty"`
 }
 
 type NodeAffinity struct {
-  RequiredDuringSchedulingIgnoredDuringExecution *RequiredDuringSchedulingIgnoredDuringExecution `json:"requiredDuringScedulingIgnoredDuringExecution,omitemtpy`
+  RequiredDuringSchedulingIgnoredDuringExecution *RequiredDuringSchedulingIgnoredDuringExecution `json:"requiredDuringSchedulingIgnoredDuringExecution,omitempty"`
 }
 
 type RequiredDuringSchedulingIgnoredDuringExecution struct {
