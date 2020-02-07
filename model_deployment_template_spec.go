@@ -21,7 +21,7 @@ type DeploymentTemplateSpec struct {
 }
 
 type Resources struct {
-	JobManager map[string]string `json:"jobManager,omitempty"`
-	TaskManager map[string]string `json:"taskManager,omitempty"`
+	JobManager map[string]string `json:"jobmanager,omitempty"`
+	TaskManager map[string]string `json:"taskmanager,omitempty"`
 }
 
