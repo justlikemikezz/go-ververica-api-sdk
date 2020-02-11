@@ -16,6 +16,6 @@ type Artifact struct {
 	MainArgs string `json:"mainArgs,omitempty"`
 	FlinkVersion float64 `json:"flinkVersion,omitempty"`
 	FlinkImageResgistry string `json:"flinkImageRegistry,omitempty"`
-	FLinkImageRepository string `json:"flinkImageRepository,omitempty"`
+	FlinkImageRepository string `json:"flinkImageRepository,omitempty"`
 	FlinkImageTag string `json:"flinkImageTag,omitempty"`
 }
