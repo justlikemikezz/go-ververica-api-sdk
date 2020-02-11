@@ -12,4 +12,5 @@ package vapi
 
 type DeploymentRestoreStrategy struct {
 	Kind string `json:"kind,omitempty"`
+	AllowNonRestoredState bool `json:"allowNonRestoredState,omitempty"`
 }
