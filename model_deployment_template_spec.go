@@ -14,7 +14,7 @@ type DeploymentTemplateSpec struct {
 	Artifact *Artifact `json:"artifact,omitempty"`
 	Parallelism int32 `json:"parallelism,omitempty"`
 	NumberOfTaskManagers int32 `json:"numberOfTaskManagers,omitempty"`
-	Resources Resources `json:"resources,omitempty"`
+	Resources *Resources `json:"resources,omitempty"`
 	FlinkConfiguration map[string]string `json:"flinkConfiguration,omitempty"`
 	Logging *Logging `json:"logging,omitempty"`
 	Kubernetes *KubernetesOptions `json:"kubernetes,omitempty"`
